@@ -11,6 +11,10 @@
  * Text Domain: CustomGoogleForms-Plugin
  */
 
+require_once(plugin_dir_path(__FILE__) . 'CustomShortcode.php');
+require_once(plugin_dir_path(__FILE__) . 'GoogleFormsTable.php');
+on_activate();
+
 function custom_google_forms()
 {
     add_menu_page(
@@ -25,9 +29,6 @@ function custom_google_forms()
 }
 add_action('admin_menu', 'custom_google_forms');
 
-require_once(plugin_dir_path(__FILE__) . 'CustomShortcode.php');
-require_once(plugin_dir_path(__FILE__) . 'GoogleFormsTable.php');
-on_activate();
 
 
 function google_forms_redirect()
