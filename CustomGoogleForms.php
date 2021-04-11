@@ -82,8 +82,6 @@ function google_forms_redirect()
     }
 }
 
-
-
 /*
 <form action="https://docs.google.com/forms/d/e/1FAIpQLSfgHydE9zOpVm39S7mG_Bh6O3fjZnJ58i2DfFz8vcBYYxoQIw/formResponse"
     target="_self"
