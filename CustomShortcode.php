@@ -8,11 +8,6 @@
 
 //$allposts = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "GoogleForms", ARRAY_A);
 
-
-
-
-
-
 if (!defined('ABSPATH'))
     exit;
 
