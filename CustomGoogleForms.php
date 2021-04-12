@@ -16,73 +16,8 @@ defined('ABSPATH') or die('No access.');
 
 require_once(plugin_dir_path(__FILE__) . 'CustomShortcode.php');
 require_once(plugin_dir_path(__FILE__) . 'GoogleFormsTable.php');
-on_activate();
+require_once(plugin_dir_path(__FILE__) . 'adminMenu.php');
 
-function custom_google_forms()
-{
-    add_menu_page(
-        "Google Forms",
-        "Google Forms",
-        "administrator",
-        "google-forms",
-        "google_forms_redirect",
-        $icon_url = 'dashicons-google',
-        $position = 4
-    );
-}
-add_action('admin_menu', 'custom_google_forms');
-
-
-function google_forms_redirect()
-{
-    //check form name for uniqueness.
-    echo '<form method="POST"> 
-    <div>
-    <label>Name your form:
-        <div><input type="text" name="formName"></input></div>
-    </label>
-    </div>
-        <div>
-            <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
-        </div>
-        <div>
-            <textarea name="googleFormConverted"
-            rows="10" cols="70"></textarea>
-        </div>
-        <label>Custom CSS</label>
-        <div>
-        <textarea name="customCSS"
-        rows="10" cols="70"></textarea>
-    </div>
-        <div>
-               <label>Timer Length in <b>Seconds</b> (0 for no timer)</label>
-        </div>  
-        <div>
-               <input type="number" name="Timer" value="0">
-        </div>   
-          
-            <input type="submit" value="Submit">
-           </form>';
-
-    if (isset($_POST["googleFormConverted"])) {
-
-        //print_r($_POST);
-
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . "GoogleForms";
-
-        $wpdb->insert(
-            $table_name,
-            array(
-                'formName' => $_POST["formName"],
-                'convertedFormHTML' => $_POST['googleFormConverted'],
-                'customCSS' => $_POST['customCSS'],
-                'timer' => $_POST['Timer']
-            )
-        );
-    }
-}
 
 /*
 <html>
