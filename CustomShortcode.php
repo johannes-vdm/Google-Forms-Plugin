@@ -17,27 +17,33 @@ function load_ss()
   );
 }
 
+add_shortcode('GoogleForm', 'ReadyForm');
 
-add_shortcode('GoogleForm', 'GoogleForm_display_content');
+function ReadyForm()
+{
+  $ready = '<form action="" method="post">
+<input type="submit" name="ReadyCheck" value="Ready">
+</form>';
+  return $ready;
+}
+
+
+if (isset($_POST['ReadyCheck'])) {
+  add_shortcode('GoogleForm', 'GoogleForm_display_content');
+}
 
 function GoogleForm_display_content($shortcode_class)
 {
-
   global $wpdb;
-
   $shortcode_name = $shortcode_class['snippet'];
-
   $query = "SELECT * FROM " . $wpdb->prefix . "GoogleForms WHERE '$shortcode_name' = formName";
-
   $result = $wpdb->get_results($query);
 
   foreach ($result as $values) {
-
     $htmlConverted = $values->convertedFormHTML;
     $seconds = $values->timer;
 
     $jsHTML = '<div><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
-
     return $htmlConverted . $jsHTML;
   }
 }
