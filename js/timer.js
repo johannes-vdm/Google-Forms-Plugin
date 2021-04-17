@@ -3,10 +3,11 @@ window.onload = function () {
     const MultipleCountdownElements = document.getElementsByClassName('CountdownTime');
     CountdownElements = MultipleCountdownElements[0];
     let time = CountdownElements.getAttribute('value');
-    setInterval(updateCountdown, 1000);
+
+    var refreshTimer = setInterval(updateCountdown, 1000);
 
     function updateCountdown() {
-        if (time < 3600) {
+        if (time < 3600 && time >= 0) {
             let minutes = Math.floor(time / 60);
             let seconds = time % 60;
 
@@ -16,7 +17,7 @@ window.onload = function () {
             CountdownElements.innerHTML = `${minutes}:${seconds}`;
             time--;
 
-        } else {
+        } else if (time > 3600) {
             let hours = Math.floor(time / 3600);
             let minutes = Math.floor(time / 60 - 60);
             let seconds = time % 60;
@@ -29,9 +30,6 @@ window.onload = function () {
             time--;
         }
 
-        if (time < 0) {
-            document.getElementById('btn-primary').submit();
-        }
     }
 
 }
