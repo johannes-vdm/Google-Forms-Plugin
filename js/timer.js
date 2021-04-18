@@ -28,6 +28,14 @@ window.onload = function () {
 
             CountdownElements.innerHTML = `${hours}:${minutes}:${seconds}`;
             time--;
+
+        } else if (time < 0) {
+            time = '';
+            console.log("STOP");
+            clearInterval(refreshTimer);
+            document.cookie = ("JSCountdown", "Finished");
+            //document.getElementsByClassName("gsc-search-box")[0].submit();
+            document.getElementById("bootstrapForm").submit();
         }
 
     }

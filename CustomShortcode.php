@@ -1,4 +1,13 @@
 <?php
+
+add_action('wp_loaded', 'register_ajax_handlers');
+
+function register_ajax_handlers()
+{
+  add_action('wp_ajax_jp_ajax_request', 'jp_ajax_process');
+  add_action('wp_ajax_nopriv_jp_ajax_request', 'jp_ajax_process');
+}
+
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
 
@@ -28,26 +37,34 @@ global $wpdb;
 
 add_shortcode('GoogleForm', 'ReadyForm');
 
+//////////////////////////////////////////
+
+/**
+ * Make sure jquery is loaded
+ */
+function add_to_header()
+{
+  wp_enqueue_script('GoogleFormSubmitAuto');
+}
+add_action('wp_enqueue_scripts', 'add_to_header');
+
+
+/**
+ * Add shortcode to show form and script
+ */
+
+
+
+////////////////////////////////////////
+
 function ReadyForm()
 {
-  $ready = '<iframe id=”hs-form-iframe-0″ class=”hs-form-iframe” scrolling=”no” style=”position: static; border: none; display: block; overflow: hidden; width: 690px; height: 969px;” height=”969″ width=”690″>
+  $ready = '<h3>You will be redirected to a form and have a quiz.</h3>
+  <form action="" method="post" id="ReadyBtn">
+      <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Submit" />
+  </form>
+</div>';
 
-  <div class=”hs_submit hs-submit” data-reactid=”.hbspt-forms-0.5″><div class=”hs-field-desc” style=”display:none;” data-reactid=”.hbspt-forms-0.5.0″></div><div class=”actions” data-reactid=”.hbspt-forms-0.5.1″><input type=”submit” value=”Submit” class=”hs-button primary large” data-reactid=”.hbspt-forms-0.5.1.0″></div></div>
-  
-  </iframe>
-  
-  <script>
-  jQuery(‘#hs-form-iframe-0’).ready(function(){
-  
-  jQuery(‘#hs-form-iframe-0’).contents()
-  .find(‘.hs-button’).on(‘click’, function() {
-  alert(‘ok’);
-  });
-  });
-  </script>';
-  //<form action="" method="post" id="ReadyForm" enctype="multipart/form-data">
-  //  <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready">
-  //</form>';
   return $ready;
 }
 
@@ -72,8 +89,4 @@ function GoogleForm_display_content($shortcode_class)
     $jsHTML = '<div><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
     return $htmlConverted . $jQuery . $jsHTML;
   }
-}
-
-if (!empty($_COOKIE["JSCountdown"])) {
-  echo "I am alive";
 }

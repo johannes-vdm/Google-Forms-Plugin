@@ -8,7 +8,6 @@ function on_activate()
     CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}GoogleForms` (
         `formID` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'NOT REQUIRED, AU_I',
         `dateTimePosted` TIMESTAMP NOT NULL DEFAULT current_timestamp() COMMENT 'GENERATED',
-        `customCSS` TEXT NULL DEFAULT NULL COMMENT 'NOT REQUIRED, DEFAULT NULL' COLLATE 'utf8mb4_general_ci',
         `formName` VARCHAR(50) NOT NULL COMMENT 'REQUIRED' COLLATE 'utf8mb4_general_ci',
         `timer` INT(11) NULL DEFAULT '0' COMMENT 'MINUTES, NOT REQUIRED, DEFAULT 0',
         `convertedFormHTML` MEDIUMTEXT NOT NULL COMMENT 'REQUIRED' COLLATE 'utf8mb4_general_ci',
@@ -17,7 +16,9 @@ function on_activate()
         UNIQUE INDEX `formName` (`formName`) USING BTREE
     )
     COLLATE='utf8mb4_general_ci'
-    ENGINE=InnoDB";
+    ENGINE=InnoDB
+    AUTO_INCREMENT=21";
+
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($create_table_query);
@@ -29,7 +30,6 @@ function on_activate()
    CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}GoogleForms` (
 	`formID` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'NOT REQUIRED, AU_I',
 	`dateTimePosted` TIMESTAMP NOT NULL DEFAULT current_timestamp() COMMENT 'GENERATED',
-	`customCSS` TEXT NULL DEFAULT NULL COMMENT 'NOT REQUIRED, DEFAULT NULL' COLLATE 'utf8mb4_general_ci',
 	`formName` VARCHAR(50) NOT NULL COMMENT 'REQUIRED' COLLATE 'utf8mb4_general_ci',
 	`timer` INT(11) NULL DEFAULT '0' COMMENT 'MINUTES, NOT REQUIRED, DEFAULT 0',
 	`convertedFormHTML` MEDIUMTEXT NOT NULL COMMENT 'REQUIRED' COLLATE 'utf8mb4_general_ci',
@@ -39,6 +39,7 @@ function on_activate()
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
-AUTO_INCREMENT=14
+AUTO_INCREMENT=21
 ;
+
 */
