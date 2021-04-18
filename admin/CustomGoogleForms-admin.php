@@ -95,6 +95,8 @@ function google_forms_redirect()
 
             $formName = $_POST['formName'];
 
+
+
             $wpdb->insert(
                 $table_name,
                 array(
@@ -104,6 +106,7 @@ function google_forms_redirect()
                     'shortcode' => '[GoogleForm snippet=' . $formName . ']'
                     //[GoogleForm snippet="1"]
                 )
+
             );
         }
     } else {
@@ -118,13 +121,11 @@ function google_forms_redirect()
         global $wpdb;
         $query = " SELECT * FROM " . $wpdb->prefix . "GoogleForms";
         $result = $wpdb->get_results($query);
-
         function trimtext($text, $start, $len)
         {
             return substr($text, $start, $len);
         }
 ?>
-
 <table class=" DisplayAdminTable">
                 <thead>
                     <tr>
@@ -175,6 +176,15 @@ function google_forms_redirect()
                 <div>
                     <h1>Add Form:</h1>
                 </div>
+                <?php
+                if (isset($_POST["googleFormConverted"])) {
+                    $Saved = '<div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">
+                    <p><strong>Settings saved.</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+                </div>';
+
+                    echo $Saved;
+                }
+                ?>
                 <div>
                     <label>Name your form:
                         <div><input type="text" name="formName" required></input></div>
@@ -291,10 +301,11 @@ function google_forms_redirect()
                         </div>
 
                         <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
-                            <div>
-                                <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
 
-                            </div>
+                        </div>
+                        <div>
+                            <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
+
                         </div>
                     </form>
                 </div>
@@ -333,17 +344,6 @@ function google_forms_redirect()
                     'transport'            => 'postMessage',
                 )
             );
-        }
-
-        add_action('customize_preview_init', 'simple_css_live_preview');
-        /**
-         * Add our live preview.
-         *
-         * @since 1.0
-         */
-        function simple_css_live_preview()
-        {
-            wp_enqueue_script('simple-css-live-preview', trailingslashit(plugin_dir_url(__FILE__)) . 'js/live-preview.js', array('customize-preview'), null, true);
         }
 
         function simple_css_sanitize_css($input)
@@ -427,7 +427,7 @@ function google_forms_redirect()
             if ($is_autosave || $is_revision || !$is_valid_nonce) {
                 return;
             }
-
+            //force to bottom of stylesheet
             if (isset($_POST['_simple_css']) && $_POST['_simple_css'] !== '') {
                 update_post_meta($post_id, '_simple_css', strip_tags($_POST['_simple_css']));
             } else {
