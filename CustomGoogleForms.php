@@ -15,4 +15,4 @@ defined('ABSPATH') or die('No access.');
 
 require_once(plugin_dir_path(__FILE__) . 'CustomShortcode.php');
 require_once(plugin_dir_path(__FILE__) . 'GoogleFormsTable.php');
-require_once(plugin_dir_path(__FILE__) . 'admin/CustomGoogleForms-admin.php');
+require_once(plugin_dir_path(__FILE__) . 'admin\CustomGoogleForms-admin.php');
