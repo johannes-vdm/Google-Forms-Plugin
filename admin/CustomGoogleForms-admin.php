@@ -95,8 +95,6 @@ function google_forms_redirect()
 
             $formName = $_POST['formName'];
 
-
-
             $wpdb->insert(
                 $table_name,
                 array(
@@ -106,7 +104,6 @@ function google_forms_redirect()
                     'shortcode' => '[GoogleForm snippet=' . $formName . ']'
                     //[GoogleForm snippet="1"]
                 )
-
             );
         }
     } else {
@@ -121,11 +118,13 @@ function google_forms_redirect()
         global $wpdb;
         $query = " SELECT * FROM " . $wpdb->prefix . "GoogleForms";
         $result = $wpdb->get_results($query);
+
         function trimtext($text, $start, $len)
         {
             return substr($text, $start, $len);
         }
 ?>
+
 <table class=" DisplayAdminTable">
                 <thead>
                     <tr>
@@ -301,7 +300,6 @@ function google_forms_redirect()
                         </div>
 
                         <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
-
                         </div>
                         <div>
                             <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
