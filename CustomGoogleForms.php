@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package CustomGoogleForms-Plugin
+ * @package Custom GoogleForms Plugin
  * Plugin Name: CustomGoogleForms-Plugin
  * Plugin URI: https://webdd.co.za
  * Description: Google Form Plugin Development
@@ -10,7 +10,6 @@
  * Licence: GPL2v2 or later 
  * Text Domain: CustomGoogleForms-Plugin
  */
-
 
 defined('ABSPATH') or die('No access.');
 
