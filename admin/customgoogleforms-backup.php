@@ -53,10 +53,6 @@ function sub_callback()
         <div>
             <textarea name="googleFormConverted" rows="10" cols="70" required></textarea>
         </div>
-        <label>Additional CSS(not required)</label>
-        <div>
-            <textarea name="customCSS" rows="10" cols="70"></textarea>
-        </div>
         <div>
             <label>Timer Length in <b>Seconds</b> (0 for no timer)</label>
         </div>
