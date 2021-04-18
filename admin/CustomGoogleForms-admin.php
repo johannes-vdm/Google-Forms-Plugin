@@ -215,8 +215,6 @@ function google_forms_redirect()
                 //NOTE check form name for uniqueness.
                 $formName = $_POST['formName'];
 
-                // print_r($_POST['googleFormConverted']);
-                // echo ($_POST['googleFormConverted']);
                 $wpdb->insert(
                     $table_name,
                     array(
@@ -290,13 +288,14 @@ function google_forms_redirect()
                             </div>
                         </div>
 
-                        <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
-                            <div>
-                                <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
 
-                            </div>
-                        </div>
                     </form>
+                </div>
+                <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
+                    <div>
+                        <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
+
+                    </div>
                 </div>
             </div>
         <?php
@@ -335,17 +334,6 @@ function google_forms_redirect()
             );
         }
 
-        add_action('customize_preview_init', 'simple_css_live_preview');
-        /**
-         * Add our live preview.
-         *
-         * @since 1.0
-         */
-        function simple_css_live_preview()
-        {
-            wp_enqueue_script('simple-css-live-preview', trailingslashit(plugin_dir_url(__FILE__)) . 'js/live-preview.js', array('customize-preview'), null, true);
-        }
-
         function simple_css_sanitize_css($input)
         {
             return strip_tags($input);
@@ -373,64 +361,8 @@ function google_forms_redirect()
             $output = str_replace(array("\r", "\n"), '', $output);
             $output = preg_replace('/\s+/', ' ', $output);
 
-
+            //forced to the bottom of all styles
             echo '<style type="text/css" id="simple-css-output">';
             echo strip_tags($output);
             echo '</style>';
-        }
-
-        add_action('add_meta_boxes', 'simple_css_metabox');
-
-        function simple_css_metabox()
-        {
-
-            $allowed = apply_filters('simple_css_metabox_capability', 'activate_plugins');
-
-            if (!current_user_can($allowed)) {
-                return;
-            }
-
-            $args = array('public' => true);
-            $post_types = get_post_types($args);
-            foreach ($post_types as $type) {
-                add_meta_box(
-                    'simple_css_metabox',
-                    __('Simple CSS', 'simple-css'),
-                    'simple_css_show_metabox',
-                    $type,
-                    'normal',
-                    'default'
-                );
-            }
-        }
-
-        function simple_css_show_metabox($post)
-        {
-            wp_nonce_field(basename(__FILE__), 'simple_css_nonce');
-            $options = get_post_meta($post->ID);
-            $css = isset($options['_simple_css']) ? $options['_simple_css'][0] : false;
-        ?>
-            <p>
-                <textarea style="width:100%;height:300px;" name="_simple_css" id="simple-css-textarea"><?php echo strip_tags($css); ?></textarea>
-            </p>
-        <?php
-        }
-
-        add_action('save_post', 'simple_css_save_metabox');
-
-        function simple_css_save_metabox($post_id)
-        {
-            $is_autosave = wp_is_post_autosave($post_id);
-            $is_revision = wp_is_post_revision($post_id);
-            $is_valid_nonce = (isset($_POST['simple_css_nonce']) && wp_verify_nonce($_POST['simple_css_nonce'], basename(__FILE__))) ? true : false;
-
-            if ($is_autosave || $is_revision || !$is_valid_nonce) {
-                return;
-            }
-
-            if (isset($_POST['_simple_css']) && $_POST['_simple_css'] !== '') {
-                update_post_meta($post_id, '_simple_css', strip_tags($_POST['_simple_css']));
-            } else {
-                delete_post_meta($post_id, '_simple_css');
-            }
         }
