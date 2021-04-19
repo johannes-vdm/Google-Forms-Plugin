@@ -1,0 +1,29 @@
+.CompleteGoogleForm{
+    background-color: white;
+}
+
+#bootstrapForm{
+background-color: red;
+}
+
+#CountdownContainer{
+    
+    width: 100%;
+
+    background-color: rgb(172, 0, 0);
+}
+
+
+.CountdownTime{
+    bottom: 0;
+    margin: 0 auto;
+
+
+    
+    position: fixed;
+    position: -webkit-fixed;
+}
+
+fieldset{
+    border: none;
+}

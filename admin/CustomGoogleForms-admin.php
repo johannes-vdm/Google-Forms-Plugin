@@ -118,13 +118,11 @@ function google_forms_redirect()
         global $wpdb;
         $query = " SELECT * FROM " . $wpdb->prefix . "GoogleForms";
         $result = $wpdb->get_results($query);
-
         function trimtext($text, $start, $len)
         {
             return substr($text, $start, $len);
         }
 ?>
-
 <table class=" DisplayAdminTable">
                 <thead>
                     <tr>
@@ -300,6 +298,7 @@ function google_forms_redirect()
                         </div>
 
                         <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
+
                         </div>
                         <div>
                             <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
@@ -377,31 +376,6 @@ function google_forms_redirect()
             echo '</style>';
         }
 
-        add_action('add_meta_boxes', 'simple_css_metabox');
-
-        function simple_css_metabox()
-        {
-
-            $allowed = apply_filters('simple_css_metabox_capability', 'activate_plugins');
-
-            if (!current_user_can($allowed)) {
-                return;
-            }
-
-            $args = array('public' => true);
-            $post_types = get_post_types($args);
-            foreach ($post_types as $type) {
-                add_meta_box(
-                    'simple_css_metabox',
-                    __('Simple CSS', 'simple-css'),
-                    'simple_css_show_metabox',
-                    $type,
-                    'normal',
-                    'default'
-                );
-            }
-        }
-
         function simple_css_show_metabox($post)
         {
             wp_nonce_field(basename(__FILE__), 'simple_css_nonce');
@@ -412,23 +386,4 @@ function google_forms_redirect()
                 <textarea style="width:100%;height:300px;" name="_simple_css" id="simple-css-textarea"><?php echo strip_tags($css); ?></textarea>
             </p>
         <?php
-        }
-
-        add_action('save_post', 'simple_css_save_metabox');
-
-        function simple_css_save_metabox($post_id)
-        {
-            $is_autosave = wp_is_post_autosave($post_id);
-            $is_revision = wp_is_post_revision($post_id);
-            $is_valid_nonce = (isset($_POST['simple_css_nonce']) && wp_verify_nonce($_POST['simple_css_nonce'], basename(__FILE__))) ? true : false;
-
-            if ($is_autosave || $is_revision || !$is_valid_nonce) {
-                return;
-            }
-            //force to bottom of stylesheet
-            if (isset($_POST['_simple_css']) && $_POST['_simple_css'] !== '') {
-                update_post_meta($post_id, '_simple_css', strip_tags($_POST['_simple_css']));
-            } else {
-                delete_post_meta($post_id, '_simple_css');
-            }
         }
