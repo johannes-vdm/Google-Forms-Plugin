@@ -8,8 +8,18 @@ function register_ajax_handlers()
   add_action('wp_ajax_nopriv_jp_ajax_request', 'jp_ajax_process');
 }
 
+add_action('wp_enqueue_scripts', 'load_cs');
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
+
+function load_cs()
+{
+  wp_register_style(
+    'CustomFormStyle',
+    plugin_dir_url(__FILE__) . "/styles/CustomGoogleForms.css"
+  );
+  wp_enqueue_style('CustomFormStyle');
+}
 
 function load_au()
 {
@@ -69,7 +79,7 @@ function GoogleForm_display_content($shortcode_class)
     $htmlConverted = $values->convertedFormHTML;
     $seconds = $values->timer;
 
-    $jsHTML = '<div><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
-    return $htmlConverted . $jsHTML;
+    $jsHTML = '<div  id="CountdownContainer"><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
+    return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML;
   }
 }
