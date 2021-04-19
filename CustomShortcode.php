@@ -55,7 +55,7 @@ add_action('wp_enqueue_scripts', 'add_to_header');
 
 function ReadyForm()
 {
-  $ready = '<h3>You will be redirected to a form and have a quiz.</h3>
+  $ready = '<div id="readyBox"><h3>You will be redirected to a form and have a quiz.</h3>
   <form action="" method="post" id="ReadyBtn">
       <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
   </form>

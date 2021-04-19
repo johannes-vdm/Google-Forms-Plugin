@@ -1,29 +1,122 @@
-.CompleteGoogleForm{
-    background-color: white;
+#readyBox{
+    margin-top: 12px;
+    background-color: #fff;
+    border: 0 !important;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 24px;
+    padding-top: 22px;
+    position: relative;
 }
 
-#bootstrapForm{
-background-color: red;
+
+#readyBox > h3{
+    text-align: center;
+}
+
+#ReadyBtn{
+        font-family: 'Google Sans',Roboto,Arial,sans-serif;
+        color: white;
+        margin-top: 10px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+}
+
+#ReadyBtn:hover{
+    font-family: 'Google Sans',Roboto,Arial,sans-serif;
+    color: black !important;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border-color: black;
+
+}
+
+#bootstrapForm > fieldset > h2{
+    font-size: 30px !important;
 }
 
 #CountdownContainer{
-    
     width: 100%;
-
-    background-color: rgb(172, 0, 0);
+    text-align: center;
 }
 
-
 .CountdownTime{
+    width: 100%;
     bottom: 0;
     margin: 0 auto;
 
-
-    
+    color: white;
+    background-color: rgb(172, 0, 0);
+   
+    left: 0;
     position: fixed;
-    position: -webkit-fixed;
 }
 
 fieldset{
-    border: none;
+    margin-top: 12px;
+    background-color: #fff;
+    border: 0 !important;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 24px;
+    padding-top: 22px;
+    position: relative;
 }
+
+h2{
+    font-size: 20px !important; 
+    font-weight: 600 !important;
+}
+
+h2>small{
+    font-size: 20px !important; 
+    font-weight: normal !important;
+}
+
+#bootstrapForm > input.btn.btn-primary{
+    font-family: 'Google Sans',Roboto,Arial,sans-serif;
+    color: white;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+#bootstrapForm > input.btn.btn-primary:hover{
+    font-family: 'Google Sans',Roboto,Arial,sans-serif;
+    color: black;
+    background-color: white;
+    margin-top: 10px;
+  
+    border-radius: 5px;
+}
+
+#bootstrapForm > fieldset > legend{
+    padding-inline-start: 0px !important;
+    padding-inline-end: 0px !important;
+    top: 40px;
+    position: relative;
+}
+
+input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], input[type=number], input[type=tel], input[type=date], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local], input[type=color], .site textarea {
+    border: var(--form--border-width) solid #0066ff;
+    border: 2px solid black !important;
+
+    padding: 3px !important;
+    border-radius: 3px;
+
+    margin: 0 2px;
+    max-width: 100%;
+}
+
+input[type=checkbox]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    border: 3px solid black !important;
+    border-radius: 3px !important;
+}
+
