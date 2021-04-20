@@ -1,5 +1,4 @@
 <?php
-
 add_action('wp_loaded', 'register_ajax_handlers');
 
 function register_ajax_handlers()
@@ -8,7 +7,8 @@ function register_ajax_handlers()
   add_action('wp_ajax_nopriv_jp_ajax_request', 'jp_ajax_process');
 }
 
-add_action('wp_enqueue_scripts', 'load_cs');
+
+add_action('wp_enqueue_scripts', 'load_cs', 11);
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
 
@@ -53,13 +53,14 @@ function add_to_header()
 }
 add_action('wp_enqueue_scripts', 'add_to_header');
 
+
 function ReadyForm()
 {
   $ready = '<div id="readyBox"><h3>You will be redirected to a form and have a quiz.</h3>
   <form action="" method="post" id="ReadyBtn">
       <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
   </form>
-</div>';
+  </div>';
 
   return $ready;
 }
@@ -79,7 +80,11 @@ function GoogleForm_display_content($shortcode_class)
     $htmlConverted = $values->convertedFormHTML;
     $seconds = $values->timer;
 
-    $jsHTML = '<div  id="CountdownContainer"><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
-    return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML;
+    if ($seconds == 0) {
+      return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>';
+    } else if ($seconds !== 0) {
+      $jsHTML = '<div  id="CountdownContainer"><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
+      return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML;
+    }
   }
 }
