@@ -33,6 +33,11 @@
 
 }
 
+#bootstrapForm{
+    background-color:white;
+    padding: 10px;
+}
+
 #bootstrapForm > fieldset > h2{
     font-size: 30px !important;
 }
@@ -56,8 +61,7 @@
 
 fieldset{
     margin-top: 12px;
-    background-color: #fff;
-    border: 0 !important;
+    border: none;
     border-radius: 8px;
     margin-bottom: 12px;
     padding: 24px;
@@ -78,17 +82,16 @@ h2>small{
 #bootstrapForm > input.btn.btn-primary{
     font-family: 'Google Sans',Roboto,Arial,sans-serif;
     color: white;
-    margin-top: 10px;
     padding: 10px 20px;
     border-radius: 5px;
+    margin: 20px;
 }
 
 #bootstrapForm > input.btn.btn-primary:hover{
     font-family: 'Google Sans',Roboto,Arial,sans-serif;
     color: black;
     background-color: white;
-    margin-top: 10px;
-  
+    margin: 20px;
     border-radius: 5px;
 }
 
