@@ -41,15 +41,14 @@ function google_forms_redirect()
     if (isset($_POST['edit'])) {
 
         $editID = $_POST['editID'];
-
         global $wpdb;
 
         $table_name = $wpdb->prefix . "GoogleForms";
         $initialize = 'SELECT * FROM ' . $table_name . ' WHERE ' . $editID . ' = formID';
+
         $result = $wpdb->get_results($initialize);
 
         foreach ($result as $values) {
-
             $formName = $values->formName;
             $ConvertedHTML = $values->convertedFormHTML;
             $timer = $values->timer;
@@ -69,7 +68,7 @@ function google_forms_redirect()
                 <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
             </div>
             <div>
-                <textarea name="editForm" rows="10" cols="70" required><?php echo $ConvertedHTML ?></textarea>
+                <textarea name="editGoogleFormConverted" rows="10" cols="70" required><?php echo $ConvertedHTML ?></textarea>
             </div>
             <div>
                 <label>Timer Length in <b>Seconds</b> (0 for no timer)</label>
@@ -77,15 +76,11 @@ function google_forms_redirect()
             <div>
                 <input type="number" name="Timer" value="<?php echo $timer ?>">
             </div>
-
-            <input type="submit" value="Submit">
+            <input type="hidden" value=<?php echo $_POST['editID'] ?> name="editID">
+            <input type="submit" value="Submit" name="editSubmit">
         </form>
-        <?php
 
-        $_POST = array_map('stripslashes_deep', $_POST);
-        $_GET = array_map('stripslashes_deep', $_GET);
-        $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-        $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
+        <?php
 
         if (isset($_POST["googleFormConverted"])) {
 
@@ -107,7 +102,30 @@ function google_forms_redirect()
             );
         }
     } else {
+        if (isset($_POST["editSubmit"])) {
 
+            $_POST = array_map('stripslashes_deep', $_POST);
+
+            global $wpdb;
+            $eID = $_POST['editID'];
+
+            $editFormName = $_POST['formName'];
+            $editConvertedHTML = $_POST['editGoogleFormConverted'];
+            $editTimer =  $_POST['Timer'];
+
+            $table_name = $wpdb->prefix . "GoogleForms";
+            $shortcodeUpdate = '[GoogleForm snippet=' . $editFormName . ']';
+
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$table_name} SET formName = %s, timer = %d, convertedFormHTML = %s, shortcode = %s  WHERE formID=$eID",
+                    $editFormName,
+                    $editTimer,
+                    $editConvertedHTML,
+                    $shortcodeUpdate
+                )
+            );
+        }
         ?>
         <div class="wrap">
             <a href=<?php
@@ -155,7 +173,15 @@ function google_forms_redirect()
                     <input type="submit" value="X" name="delete">
                 </form>';
 
-                    $final = '<tr>' . '<td>' . $formName . '</td><td>' . $seconds . '</td><td>' . $shortcode . '</td><td>' .  trimtext(htmlspecialchars($htmlConverted), 0, 80) . '</td><td>' . $EDIT . '</td><td style="text-align: center;">' . $DELETE . '</td>' . '<tr>';
+                    $checkLengthHTML = strlen($htmlConverted);
+
+                    if ($checkLengthHTML > 80) {
+                        $dotdotdot = '...';
+                    } else {
+                        $dotdotdot = '';
+                    }
+
+                    $final = '<tr>' . '<td>' . $formName . '</td><td>' . $seconds . '</td><td>' . $shortcode . '</td><td>' .  trimtext(htmlspecialchars($htmlConverted), 0, 80) . $dotdotdot . '</td><td>' . $EDIT . '</td><td style="text-align: center;">' . $DELETE . '</td>' . '<tr>';
 
 
                     echo $final;
@@ -174,7 +200,7 @@ function google_forms_redirect()
                     <h1>Add Form:</h1>
                 </div>
                 <?php
-                if (isset($_POST["googleFormConverted"])) {
+                if (isset($_POST["googleFormsADD"])) {
                     $Saved = '<div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">
                     <p><strong>Settings saved.</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
                 </div>';
@@ -200,10 +226,8 @@ function google_forms_redirect()
                     <input type="number" name="Timer" value="0">
                 </div>
 
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit" name="googleFormsADD">
             </form>
-
-
 
             <?php
 
@@ -213,7 +237,7 @@ function google_forms_redirect()
             $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 
 
-            if (isset($_POST["googleFormConverted"])) {
+            if (isset($_POST["googleFormsADD"])) {
 
                 global $wpdb;
 
@@ -222,8 +246,6 @@ function google_forms_redirect()
                 //NOTE check form name for uniqueness.
                 $formName = $_POST['formName'];
 
-                // print_r($_POST['googleFormConverted']);
-                // echo ($_POST['googleFormConverted']);
                 $wpdb->insert(
                     $table_name,
                     array(
@@ -250,11 +272,11 @@ function google_forms_redirect()
                 'css_editor'
             );
 
-            add_action('load-' . $setting, 'simple_css_scripts');
+            add_action('load-' . $setting, 'css_scripts');
         }
 
 
-        function simple_css_scripts()
+        function css_scripts()
         {
         }
 
@@ -293,7 +315,7 @@ function google_forms_redirect()
                         <div id="post-body-content">
                             <?php settings_fields('simple_css'); ?>
                             <div class="simple-css-container" data-theme="<?php echo $theme_name; ?>">
-                                <textarea name="simple_css[css]" id="simple-css-textarea"><?php echo $css; ?></textarea>
+                                <textarea name="simple_css[css]" id="css-textarea"><?php echo $css; ?></textarea>
                             </div>
                         </div>
 
@@ -311,16 +333,16 @@ function google_forms_redirect()
         }
 
 
-        function simple_css_validate($input)
+        function _validate($input)
         {
             $input['css'] = strip_tags($input['css']);
             $input['theme'] = sanitize_text_field($input['theme']);
             return $input;
         }
 
-        add_action('customize_register', 'simple_css_customize');
+        add_action('customize_register', '_customize');
 
-        function simple_css_customize($wp_customize)
+        function css_customize($wp_customize)
         {
             require_once(plugin_dir_path(__FILE__) . 'customize/css-control.php');
 
@@ -360,7 +382,7 @@ function google_forms_redirect()
             }
 
             if (is_singular()) {
-                $output .= get_post_meta(get_the_ID(), '_simple_css', true);
+                $output .= get_post_meta(get_the_ID(), '_css', true);
             }
 
             if ('' == $output) {
@@ -371,19 +393,7 @@ function google_forms_redirect()
             $output = preg_replace('/\s+/', ' ', $output);
 
 
-            echo '<style type="text/css" id="simple-css-output">';
+            echo '<style type="text/css" id="css-output">';
             echo strip_tags($output);
             echo '</style>';
-        }
-
-        function simple_css_show_metabox($post)
-        {
-            wp_nonce_field(basename(__FILE__), 'simple_css_nonce');
-            $options = get_post_meta($post->ID);
-            $css = isset($options['_simple_css']) ? $options['_simple_css'][0] : false;
-        ?>
-            <p>
-                <textarea style="width:100%;height:300px;" name="_simple_css" id="simple-css-textarea"><?php echo strip_tags($css); ?></textarea>
-            </p>
-        <?php
         }
