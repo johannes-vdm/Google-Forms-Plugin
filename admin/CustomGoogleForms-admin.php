@@ -82,6 +82,8 @@ function google_forms_redirect()
 
         <?php
 
+        $_POST = array_map('stripslashes_deep', $_POST);
+
         if (isset($_POST["googleFormConverted"])) {
 
             global $wpdb;
@@ -141,7 +143,7 @@ function google_forms_redirect()
             return substr($text, $start, $len);
         }
 ?>
-<table class=" DisplayAdminTable">
+            <table class=" DisplayAdminTable">
                 <thead>
                     <tr>
                         <th scope="col">Form Name</th>
@@ -160,8 +162,6 @@ function google_forms_redirect()
                     $seconds = $values->timer;
                     $shortcode = $values->shortcode;
                     $htmlConverted = $values->convertedFormHTML;
-
-
 
                     $EDIT = '<form action="" method="post" id="editForm" onsubmit="location.reload()">
                 <input type="hidden" name="editID" value="' . $formID . '">
@@ -232,10 +232,6 @@ function google_forms_redirect()
             <?php
 
             $_POST = array_map('stripslashes_deep', $_POST);
-            $_GET = array_map('stripslashes_deep', $_GET);
-            $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-            $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
-
 
             if (isset($_POST["googleFormsADD"])) {
 
