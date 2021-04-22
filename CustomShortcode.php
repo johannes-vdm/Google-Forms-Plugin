@@ -7,7 +7,6 @@ function register_ajax_handlers()
   add_action('wp_ajax_nopriv_jp_ajax_request', 'jp_ajax_process');
 }
 
-
 add_action('wp_enqueue_scripts', 'load_cs', 11);
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
@@ -23,11 +22,12 @@ function load_cs()
 
 function load_au()
 {
-  wp_enqueue_script(
+  wp_register_script(
     'GoogleFormSubmitAuto',
     plugin_dir_url(__FILE__) . 'js/GoogleSubmitAjax.js',
     array('jquery')
   );
+  wp_enqueue_script('GoogleFormSubmitAuto');
 }
 
 function load_tj()
@@ -40,8 +40,9 @@ function load_tj()
   );
 }
 
-if (!defined('ABSPATH'))
+if (!defined('ABSPATH')) {
   exit;
+}
 
 global $wpdb;
 
@@ -51,21 +52,44 @@ function add_to_header()
 {
   wp_enqueue_script('GoogleFormSubmitAuto');
 }
+
+include_once(ABSPATH . 'wp-includes/pluggable.php');
+
 add_action('wp_enqueue_scripts', 'add_to_header');
+
+$current_user = wp_get_current_user();
+$currentUserEmail = $current_user->user_email;
+
+if (!empty($currentUserEmail)) {
+
+  global $wpdb;
+
+  $table_name = $wpdb->prefix . "googleformscomplete";
+  //CONTINUE FROM HERE
+}
+
+?>
+<script type="text/javascript">
+  var currentUserEmail = '<?php echo $currentUserEmail ?>'
+</script>
+
+<?php
 
 
 function ReadyForm()
 {
-  $ready = '<div id="readyBox"><h3>You will be redirected to a form and have a quiz.</h3>
+  $ready = '<div id="readyBox">
+  <h3>You will be redirected to a form and have a quiz.</h3>
   <form action="" method="post" id="ReadyBtn">
-      <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
+    <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
   </form>
-  </div>';
+</div>';
 
   return $ready;
 }
 
 if (isset($_POST['ReadyCheck'])) {
+
   add_shortcode('GoogleForm', 'GoogleForm_display_content');
 }
 
@@ -83,7 +107,9 @@ function GoogleForm_display_content($shortcode_class)
     if ($seconds == 0) {
       return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>';
     } else if ($seconds !== 0) {
-      $jsHTML = '<div  id="CountdownContainer"><h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4></div>';
+      $jsHTML = '<div id="CountdownContainer">
+  <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
+</div>';
       return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML;
     }
   }

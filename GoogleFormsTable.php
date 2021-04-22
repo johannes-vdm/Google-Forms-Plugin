@@ -25,7 +25,6 @@ function on_activate()
 }
 
 
-
 /*
    CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}GoogleForms` (
 	`formID` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'NOT REQUIRED, AU_I',
@@ -42,4 +41,18 @@ ENGINE=InnoDB
 AUTO_INCREMENT=21
 ;
 
+*/
+
+/*
+CREATE TABLE `{$wpdb->prefix}googleformscomplete` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Timestamp` TIMESTAMP NULL DEFAULT current_timestamp(),
+	`UserEmail` TINYTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`FormCompleted` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=4
+;
 */
