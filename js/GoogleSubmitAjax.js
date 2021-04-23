@@ -1,3 +1,69 @@
+
+//WORKS PERFECTLY BUT WITHOUT FORM SUB
+jQuery(document).ready(function ($) {
+    //When the form is submitted...
+
+    $('#bootstrapForm').submit(function (e) {
+        e.preventDefault();
+        var extraData = {};
+        //Send the serialized data to mailer.php.
+
+        $.ajax({
+            url: 'https://docs.google.com/forms/d/e/1FAIpQLSdjeZagH9IK7VqMNZR3dkX-DBQmK3XAfj42rzDWxMmiKpHzSw/formResponse',     //The public Google Form //url, but replace /view with /formResponse
+            data: $('#bootstrapForm').serialize(), //Nifty jquery function that gets all the input data
+
+
+
+            type: 'POST', //tells ajax to post the data to the url
+            dataType: "json", //the standard data type for most ajax requests
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            error: function () {
+                alert('Form Submitted. Thanks.')
+            }
+
+            //data: extraData,
+            //dataType: 'jsonp',
+            //error: function () {
+            //    alert('Form Submitted. Thanks.')
+            //},
+            //success: function (data) {
+            //    console.log(data);
+            //}
+            //    $("#success").show().fadeOut(5000); //=== Show Success Message==
+            //},
+            // error: function (data) {
+            //     $("#error").show().fadeOut(5000); //===Show Error Message====
+            // }
+        });
+        //=== To Avoid Page Refresh and Fire the Event "Click"===
+        //$.post("mailer.php");
+        //Take our response, and replace whatever is in the "form2"
+        //div with it.
+        // $('#form1').hide();
+        // $('#form2').show();
+    });
+});
+
+
+
+
+
+//($('#bootstrapForm').submit(function (event) {
+//    event.preventDefault()
+//    event.stopPropagation();
+//    var extraData = {}
+//    $('#bootstrapForm').ajaxSubmit({
+//        data: extraData,
+//        dataType: 'jsonp',  // This won't really work. It's just to use a GET instead of a POST to allow cookies from different domain.
+//        error: function () {
+//            alert('Form Submitted. Thanks.')
+//        }
+//    })
+//}))(jQuery);
+
 //window.onload = function () {
 //    alert("YES");
 //    document.getElementById("#bootstrapForm").submit();
@@ -70,69 +136,3 @@
 //        }
 //    });
 //});
-
-//WORKS PERFECTLY BUT WITHOUT FORM SUB
-jQuery(document).ready(function ($) {
-    //When the form is submitted...
-
-    $('#bootstrapForm').submit(function (e) {
-        e.preventDefault();
-        var extraData = {};
-        //Send the serialized data to mailer.php.
-
-        $.ajax({
-            url: 'https://docs.google.com/forms/d/e/1FAIpQLSdjeZagH9IK7VqMNZR3dkX-DBQmK3XAfj42rzDWxMmiKpHzSw/formResponse',     //The public Google Form //url, but replace /view with /formResponse
-            data: $('#bootstrapForm').serialize(), //Nifty jquery function that gets all the input data
-
-
-
-            type: 'POST', //tells ajax to post the data to the url
-            dataType: "json", //the standard data type for most ajax requests
-            headers: {
-                'Content-Type': 'application/json'
-            },
-
-            error: function () {
-                alert('Form Submitted. Thanks.')
-            }
-
-
-            //data: extraData,
-            //dataType: 'jsonp',
-            //error: function () {
-            //    alert('Form Submitted. Thanks.')
-            //},
-            //success: function (data) {
-            //    console.log(data);
-            //}
-            //    $("#success").show().fadeOut(5000); //=== Show Success Message==
-            //},
-            // error: function (data) {
-            //     $("#error").show().fadeOut(5000); //===Show Error Message====
-            // }
-        });
-        //=== To Avoid Page Refresh and Fire the Event "Click"===
-        //$.post("mailer.php");
-        //Take our response, and replace whatever is in the "form2"
-        //div with it.
-        // $('#form1').hide();
-        // $('#form2').show();
-    });
-});
-
-
-
-
-
-//($('#bootstrapForm').submit(function (event) {
-//    event.preventDefault()
-//    event.stopPropagation();
-//    var extraData = {}
-//    $('#bootstrapForm').ajaxSubmit({
-//        data: extraData,
-//        dataType: 'jsonp',  // This won't really work. It's just to use a GET instead of a POST to allow cookies from different domain.
-//        error: function () {
-//            alert('Form Submitted. Thanks.')
-//        }
-//    })
-//}))(jQuery);
