@@ -24,7 +24,7 @@ function load_au()
 {
   wp_register_script(
     'GoogleFormSubmitAuto',
-    plugin_dir_url(__FILE__) . 'js/GoogleSubmitAjax.js',
+    plugin_dir_url(__FILE__) . '/js/GoogleSubmitAjax.js',
     array('jquery')
   );
   wp_enqueue_script('GoogleFormSubmitAuto');

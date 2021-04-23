@@ -305,13 +305,14 @@ function google_forms_redirect()
             ?>
 
             <div class="wrap" id="poststuff">
+                <h1><b>Add you custom CSS:</b></h1>
                 <?php settings_errors(); ?>
                 <div id="post-body" class="simple-css metabox-holder columns-2">
                     <form action="options.php" method="post">
                         <div id="post-body-content">
                             <?php settings_fields('simple_css'); ?>
                             <div class="simple-css-container" data-theme="<?php echo $theme_name; ?>">
-                                <textarea name="simple_css[css]" id="css-textarea"><?php echo $css; ?></textarea>
+                                <textarea name="simple_css[css]" id="css-textarea" rows="10" cols="70"><?php echo $css; ?></textarea>
                             </div>
                         </div>
 
@@ -319,8 +320,7 @@ function google_forms_redirect()
 
                         </div>
                         <div>
-                            <?php submit_button(__('Save CSS', 'simple-css'), 'primary large simple-css-save'); ?>
-
+                            <input type="submit" name="submit" id="submit" value="Save CSS">
                         </div>
                     </form>
                 </div>
@@ -384,12 +384,4 @@ function google_forms_redirect()
             if ('' == $output) {
                 return;
             }
-
-            $output = str_replace(array("\r", "\n"), '', $output);
-            $output = preg_replace('/\s+/', ' ', $output);
-
-
-            echo '<style type="text/css" id="css-output">';
-            echo strip_tags($output);
-            echo '</style>';
         }

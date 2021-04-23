@@ -1,8 +1,10 @@
 window.onload = function () {
-    const multipleCountdownElements = document.getElementsByClassName('CountdownTime');
+
     const userEmailElement = document.getElementById("emailAddress")
 
     userEmailElement.value = currentUserEmail;
+
+    const multipleCountdownElements = document.getElementsByClassName('CountdownTime');
 
     countdownElements = multipleCountdownElements[0];
     let time = countdownElements.getAttribute('value');
