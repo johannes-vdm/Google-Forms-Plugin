@@ -1,8 +1,12 @@
 window.onload = function () {
+    //NOTE ask user to enter email id
 
-    const userEmailElement = document.getElementById("emailAddress")
+    //NOTE login will not be forced 
 
-    userEmailElement.value = currentUserEmail;
+    const userEmailElement = document.getElementById("emailAddress");
+    if (userEmailElement.length > 0) {
+        userEmailElement.value = currentUserEmail;
+    }
 
     const multipleCountdownElements = document.getElementsByClassName('CountdownTime');
 
@@ -12,7 +16,7 @@ window.onload = function () {
 
     function updateCountdown() {
         if (time <= 3600 && time > 0) {
-            //between 0 and 1h01
+            //STUB between 0 and !=1h01
             let minutes = Math.floor(time / 60);
             let seconds = time % 60;
 
@@ -23,7 +27,7 @@ window.onload = function () {
             time--;
 
         } else if (time > 3600) {
-            // >01h
+            //STUB >01h
             let hours = Math.floor(time / 3600);
             let minutes = Math.floor(time / 60 - 60);
             let seconds = time % 60;
@@ -36,13 +40,15 @@ window.onload = function () {
             time--;
 
         } else if (time <= 0) {
-            //time over. 
+            //STUB time over. 
             time = '';
             clearInterval(refreshTimer);
             document.getElementById("bootstrapForm").submit();
-
+            if (!allAreFilled) {
+                alert("You didn't fill in the required fields. Please do the quiz again.");
+            }
         } else {
-            //should never happen.
+            //STUB should never happen.
             console.error("Time invalid");
         }
     }

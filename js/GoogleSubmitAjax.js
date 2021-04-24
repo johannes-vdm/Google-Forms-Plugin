@@ -1,18 +1,48 @@
 jQuery(document).ready(function ($) {
-    //When the form is submitted...
+
+    //grab form action
+    var formAction = document.getElementById("bootstrapForm").action;
 
     $('#bootstrapForm').submit(function (e) {
         e.preventDefault();
 
         $.ajax({
-            url: 'https://docs.google.com/forms/d/e/1FAIpQLSdjeZagH9IK7VqMNZR3dkX-DBQmK3XAfj42rzDWxMmiKpHzSw/formResponse',     //The public Google Form //url, but replace /view with /formResponse
-            data: $('#bootstrapForm').serialize(), //Nifty jquery function that gets all the input data
-            type: 'POST', //tells ajax to post the data to the url
-            dataType: "json", //the standard data type for most ajax requests
+            url: formAction,
+            data: $('#bootstrapForm').serialize(),
+            type: 'POST',
+            dataType: "json",
 
             error: function () {
-                alert('Form Submitted. Thanks.')
+
+                history.back(alert('Quiz Submitted. Thanks.'));
+
+                setCookie('shortcodeCookie', 1);
+                //NOTE send cookie to check if form was submitted per user
             }
         });
     });
 });
+
+function setCookie(name, days) {
+
+    const shortcodeElemnent = document.getElementById('shrtcode');
+
+    let shortcodeName = shortcodeElemnent.getAttribute('value');
+    value = shortcodeName;
+
+    console.log(shortcodeName);
+
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function SetCompletion() {
+    var complete = "Yes";
+    '<%Session["Complete"] = "' + complete + '"; %>';
+    alert('<%=Session["Complete"] %>');
+}

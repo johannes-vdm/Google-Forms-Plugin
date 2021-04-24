@@ -1,4 +1,32 @@
 <?php
+
+if (isset($_COOKIE['shortcodeCookie'])) {
+  $ShortcodeCookie = $_COOKIE['shortcodeCookie'];
+  unset($_COOKIE['shortcodeCookie']);
+  setcookie('shortcodeCookie', null, -1, '/');
+  echo "COOKIE EXIST";
+}
+
+include(ABSPATH . "wp-includes/pluggable.php");
+
+if (isset($ShortcodeCookie)) {
+  global $wpdb;
+  $table_name = $wpdb->prefix . "googleformscomplete";
+
+  $current_user = wp_get_current_user();
+  $current_email = $current_user->user_email;
+
+  $wpdb->insert(
+    $table_name,
+    array(
+      'UserEmail' => $current_email,
+      'FormCompleted' => $ShortcodeCookie
+    )
+  );
+}
+
+unset($_COOKIE['shortcodeCookie']);
+
 add_action('wp_loaded', 'register_ajax_handlers');
 
 function register_ajax_handlers()
@@ -24,7 +52,7 @@ function load_au()
 {
   wp_register_script(
     'GoogleFormSubmitAuto',
-    plugin_dir_url(__FILE__) . '/js/GoogleSubmitAjax.js',
+    plugin_dir_url(__FILE__) . 'js/GoogleSubmitAjax.js',
     array('jquery')
   );
   wp_enqueue_script('GoogleFormSubmitAuto');
@@ -44,10 +72,6 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-global $wpdb;
-
-add_shortcode('GoogleForm', 'ReadyForm');
-
 function add_to_header()
 {
   wp_enqueue_script('GoogleFormSubmitAuto');
@@ -60,21 +84,43 @@ add_action('wp_enqueue_scripts', 'add_to_header');
 $current_user = wp_get_current_user();
 $currentUserEmail = $current_user->user_email;
 
-if (!empty($currentUserEmail)) {
+if (isset($currentUserEmail)) {
+?>
+  <script type="text/javascript">
+    var currentUserEmail = '<?php echo $currentUserEmail ?>'
+  </script>
+<?php
+}
+
+if (isset($ShortcodeCookie)) {
 
   global $wpdb;
 
-  $table_name = $wpdb->prefix . "googleformscomplete";
-  //CONTINUE FROM HERE
+  $query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '$currentUserEmail' = UserEmail AND FormCompleted IN ('$ShortcodeCookie') LIMIT 1";
+  $result = $wpdb->get_results($query);
+
+  //FIXME
+  //FIXME
+  //FIXME
+  foreach ($result as $values) {
+    $userCompleted = $values->true;
+    echo $userCompleted;
+    //FIXME
+    //FIXME
+    //FIXME
+  }
 }
 
-?>
-<script type="text/javascript">
-  var currentUserEmail = '<?php echo $currentUserEmail ?>'
-</script>
 
-<?php
-
+if (is_user_logged_in()) {
+  if (isset($userCompleted)) {
+    add_shortcode('GoogleForm', 'CompletedForm');
+  } else {
+    add_shortcode('GoogleForm', 'ReadyForm');
+  }
+} else {
+  add_shortcode('GoogleForm', 'NotLoggedIn');
+}
 
 function ReadyForm()
 {
@@ -89,14 +135,32 @@ function ReadyForm()
 }
 
 if (isset($_POST['ReadyCheck'])) {
-
   add_shortcode('GoogleForm', 'GoogleForm_display_content');
+}
+
+function CompletedForm()
+{
+  $completed = '<div id="readyBox">
+  <h3>You have completed this quiz.</h3>
+</div>';
+
+  return $completed;
+}
+
+function NotLoggedIn()
+{
+  $notLoggedin = '<div id="readyBox">
+  <h3>You are not logged in.</h3>
+</div>';
+
+  return $notLoggedin;
 }
 
 function GoogleForm_display_content($shortcode_class)
 {
   global $wpdb;
   $shortcode_name = $shortcode_class['snippet'];
+
   $query = "SELECT * FROM " . $wpdb->prefix . "GoogleForms WHERE '$shortcode_name' = formName";
   $result = $wpdb->get_results($query);
 
@@ -105,12 +169,12 @@ function GoogleForm_display_content($shortcode_class)
     $seconds = $values->timer;
 
     if ($seconds == 0) {
-      return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>';
+      return '<div id="shrtcode" value=' . $shortcode_name . '><div class="CompleteGoogleForm">' . $htmlConverted . '</div></div>';
     } else if ($seconds !== 0) {
       $jsHTML = '<div id="CountdownContainer">
   <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
 </div>';
-      return '<div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML;
+      return '<div id="shrtcode" value=' . $shortcode_name . '><div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML . '</div>';
     }
   }
 }

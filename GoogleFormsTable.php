@@ -16,9 +16,24 @@ function on_activate()
         UNIQUE INDEX `formName` (`formName`) USING BTREE
     )
     COLLATE='utf8mb4_general_ci'
-    ENGINE=InnoDB
-    AUTO_INCREMENT=21";
+    ENGINE=InnoDB";
+    //NOTE REMOVED AUTO_INCREMENT=0
 
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($create_table_query);
+
+    global $wpdb;
+    $create_table_query = "
+    CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}googleformscomplete` (
+        `ID` INT(11) NOT NULL AUTO_INCREMENT,
+        `Timestamp` TIMESTAMP NULL DEFAULT current_timestamp(),
+        `UserEmail` TINYTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+        `FormCompleted` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+        PRIMARY KEY (`ID`) USING BTREE
+    )
+    COLLATE='utf8mb4_general_ci'
+    ENGINE=InnoDB";
+    //NOTE REMOVED AUTO_INCREMENT=0
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($create_table_query);
@@ -38,13 +53,13 @@ function on_activate()
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
-AUTO_INCREMENT=21
+AUTO_INCREMENT=0
 ;
 
 */
 
 /*
-CREATE TABLE `{$wpdb->prefix}googleformscomplete` (
+CREATE TABLE IF NOT EXISTS`{$wpdb->prefix}googleformscomplete` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`Timestamp` TIMESTAMP NULL DEFAULT current_timestamp(),
 	`UserEmail` TINYTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
@@ -53,6 +68,6 @@ CREATE TABLE `{$wpdb->prefix}googleformscomplete` (
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
-AUTO_INCREMENT=4
+AUTO_INCREMENT=0
 ;
 */
