@@ -40,9 +40,3 @@ function setCookie(name, days) {
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
-
-function SetCompletion() {
-    var complete = "Yes";
-    '<%Session["Complete"] = "' + complete + '"; %>';
-    alert('<%=Session["Complete"] %>');
-}

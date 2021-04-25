@@ -7,7 +7,7 @@ function load_as()
 {
     wp_register_style(
         'CustomAdminMenu',
-        plugin_dir_url(__FILE__) . "/admin/styles/AdminMenu.css"
+        plugin_dir_url(__FILE__) . "admin/styles/AdminMenu.css"
     );
     wp_enqueue_style('CustomAdminMenu');
 }
@@ -80,7 +80,7 @@ function google_forms_redirect()
             <div>
                 <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
                 <br>
-                <label><b>If you would like the user's email to be autofilled with the logged in user's email, please add id="emailAddress" to user-email inputs in the HTML.'<b></label>
+                <label><b>If you would like the user's email to be autofilled with the logged in user's email, please add id="emailAddress" to user-email inputs in the HTML.<b></label>
             </div>
             <div>
                 <textarea name="editGoogleFormConverted" rows="10" cols="120" required><?php echo $ConvertedHTML ?></textarea>

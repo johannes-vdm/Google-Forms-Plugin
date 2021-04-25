@@ -4,7 +4,12 @@ if (isset($_COOKIE['shortcodeCookie'])) {
   $ShortcodeCookie = $_COOKIE['shortcodeCookie'];
   unset($_COOKIE['shortcodeCookie']);
   setcookie('shortcodeCookie', null, -1, '/');
-  echo "COOKIE EXIST";
+}
+
+if (isset($_COOKIE['currentShortcodeCookie'])) {
+  $currentShortcodeCookie = $_COOKIE['currentShortcodeCookie'];
+  unset($_COOKIE['currentShortcodeCookie']);
+  setcookie('currentShortcodeCookie', null, -1, '/');
 }
 
 include(ABSPATH . "wp-includes/pluggable.php");
@@ -25,7 +30,10 @@ if (isset($ShortcodeCookie)) {
   );
 }
 
-unset($_COOKIE['shortcodeCookie']);
+$current_user = wp_get_current_user();
+$currentUserEmail = $current_user->user_email;
+
+
 
 add_action('wp_loaded', 'register_ajax_handlers');
 
@@ -81,36 +89,20 @@ include_once(ABSPATH . 'wp-includes/pluggable.php');
 
 add_action('wp_enqueue_scripts', 'add_to_header');
 
-$current_user = wp_get_current_user();
-$currentUserEmail = $current_user->user_email;
 
-if (isset($currentUserEmail)) {
-?>
-  <script type="text/javascript">
-    var currentUserEmail = '<?php echo $currentUserEmail ?>'
-  </script>
-<?php
-}
 
-if (isset($ShortcodeCookie)) {
-
+if (isset($currentShortcodeCookie)) {
   global $wpdb;
 
-  $query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '$currentUserEmail' = UserEmail AND FormCompleted IN ('$ShortcodeCookie') LIMIT 1";
+  $query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '$currentUserEmail' = UserEmail AND FormCompleted IN ('$currentShortcodeCookie') LIMIT 1";
   $result = $wpdb->get_results($query);
 
-  //FIXME
-  //FIXME
-  //FIXME
   foreach ($result as $values) {
     $userCompleted = $values->true;
-    echo $userCompleted;
-    //FIXME
-    //FIXME
-    //FIXME
   }
 }
 
+add_shortcode('GoogleForm', 'grabShortode');
 
 if (is_user_logged_in()) {
   if (isset($userCompleted)) {
@@ -122,39 +114,48 @@ if (is_user_logged_in()) {
   add_shortcode('GoogleForm', 'NotLoggedIn');
 }
 
-function ReadyForm()
+function grabShortode($shortcode_class)
 {
-  $ready = '<div id="readyBox">
-  <h3>You will be redirected to a form and have a quiz.</h3>
-  <form action="" method="post" id="ReadyBtn">
-    <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
-  </form>
-</div>';
+  $shortcode_name = $shortcode_class['snippet'];
+}
+
+function ReadyForm($shortcode_class)
+{
+  $shortcode_name = $shortcode_class['snippet'];
+  $ready = '<div id="Shortcodegrab" value="' . $shortcode_name . '"></div><div id="readyBox">
+   <h3>You will be redirected to a form and have a quiz.</h3>
+   <form action="" method="post" id="ReadyBtn">
+     <input id="ReadyBtn" type="submit" name="ReadyCheck" value="Ready" />
+   </form>
+ </div>';
 
   return $ready;
 }
 
 if (isset($_POST['ReadyCheck'])) {
-  add_shortcode('GoogleForm', 'GoogleForm_display_content');
+  echo add_shortcode('GoogleForm', 'GoogleForm_display_content');
 }
 
-function CompletedForm()
+function CompletedForm($shortcode_class)
 {
-  $completed = '<div id="readyBox">
-  <h3>You have completed this quiz.</h3>
-</div>';
+  $shortcode_name = $shortcode_class['snippet'];
+  $completed = '<div id="shrtcode" value="' . $shortcode_name . '"><div id="readyBox">
+   <h3>You have completed this quiz.</h3>
+ </div>';
 
   return $completed;
 }
 
-function NotLoggedIn()
+function NotLoggedIn($shortcode_class)
 {
-  $notLoggedin = '<div id="readyBox">
-  <h3>You are not logged in.</h3>
-</div>';
+  $shortcode_name = $shortcode_class['snippet'];
+  $notLoggedin = '<div id="shrtcode" value="' . $shortcode_name . '"><div id="readyBox">
+   <h3>You are not logged in.</h3>
+ </div>';
 
   return $notLoggedin;
 }
+
 
 function GoogleForm_display_content($shortcode_class)
 {
@@ -169,12 +170,12 @@ function GoogleForm_display_content($shortcode_class)
     $seconds = $values->timer;
 
     if ($seconds == 0) {
-      return '<div id="shrtcode" value=' . $shortcode_name . '><div class="CompleteGoogleForm">' . $htmlConverted . '</div></div>';
+      return '<div id="shrtcode" value="' . $shortcode_name . '"><div class="CompleteGoogleForm">' . $htmlConverted . '</div>>';
     } else if ($seconds !== 0) {
       $jsHTML = '<div id="CountdownContainer">
-  <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
-</div>';
-      return '<div id="shrtcode" value=' . $shortcode_name . '><div class="CompleteGoogleForm">' . $htmlConverted . '</div>' . $jsHTML . '</div>';
+   <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
+ </div>';
+      return '<div id="shrtcode" value="' . $shortcode_name . '"><div class="CompleteGoogleForm"></div>' . $htmlConverted . '</div>' . $jsHTML;
     }
   }
 }

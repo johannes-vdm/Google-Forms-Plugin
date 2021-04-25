@@ -1,12 +1,23 @@
-window.onload = function () {
-    //NOTE ask user to enter email id
-
-    //NOTE login will not be forced 
-
-    const userEmailElement = document.getElementById("emailAddress");
-    if (userEmailElement.length > 0) {
-        userEmailElement.value = currentUserEmail;
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
     }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+window.onload = function () {
+
+    const shortcodeCurrent = document.getElementById("Shortcodegrab");
+    if (typeof (shortcodeCurrent) != 'undefined' && shortcodeCurrent != null) {
+
+        let shortcodeCurrentName = shortcodeCurrent.getAttribute('value');
+        setCookie('currentShortcodeCookie', shortcodeCurrentName, 1);
+        console.log(shortcodeCurrentName);
+    }
+
 
     const multipleCountdownElements = document.getElementsByClassName('CountdownTime');
 
@@ -43,10 +54,36 @@ window.onload = function () {
             //STUB time over. 
             time = '';
             clearInterval(refreshTimer);
-            document.getElementById("bootstrapForm").submit();
-            if (!allAreFilled) {
-                alert("You didn't fill in the required fields. Please do the quiz again.");
-            }
+            //document.getElementsByClassName("btn").click;
+            // document.getElementById("bootstrapForm").submit();
+            // document.getElementById('loginSubmit').click();
+            //if (!allAreFilled) {
+            //    alert("You didn't fill in the required fields. Please do the quiz again.");
+
+            var formAction = document.getElementById("bootstrapForm").action;
+
+            jQuery.ajax({
+                url: formAction,
+                data: jQuery('#bootstrapForm').serialize(),
+                type: 'POST',
+                dataType: "json",
+
+                error: function () {
+
+                    history.back(alert('Quiz Submitted. Thanks.'));
+
+
+                    const shortcodeElemnent = document.getElementById('shrtcode');
+
+                    let shortcodeName = shortcodeElemnent.getAttribute('value');
+
+                    setCookieSubmit('shortcodeCookie', shortcodeName, 1);
+                    //NOTE send cookie to check if form was submitted per user
+                }
+            });
+
+
+            //}
         } else {
             //STUB should never happen.
             console.error("Time invalid");
