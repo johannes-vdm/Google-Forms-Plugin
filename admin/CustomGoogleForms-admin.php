@@ -69,30 +69,40 @@ function google_forms_redirect()
 
 ?>
         <form method="POST">
-            <div>
-                <h1>Edit Form:</h1>
-            </div>
-            <div>
-                <label>Name your form:
-                    <div><input type="text" name="formName" value="<?php echo $formName ?>" required></input></div>
-                </label>
-            </div>
-            <div>
-                <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
+            <div class="wrap" id="poststuff">
+                <div>
+                    <h1>Edit Form:</h1>
+                </div>
+                <div>
+                    <label>Name your form:
+                        <div><input type="text" name="formName" value="<?php echo $formName ?>" required></input></div>
+                    </label>
+                </div>
+                <div>
+                    <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
+                    <label><b>Note: Please do not copy the Javascript</b></label><br>
+                </div>
                 <br>
-                <label><b>If you would like the user's email to be autofilled with the logged in user's email, please add id="emailAddress" to user-email inputs in the HTML.<b></label>
+                <div>
+                    <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace id="emailAddress" to user-email inputs in the HTML.<br></b>For Example:</span>
+                    <span>
+                        <pre><code>&ltinput id="011235" type="text" class="form-control"></code></pre>
+                    </span><span>Changed to:</span><span>
+                        <pre><code>&ltinput id="emailAddress" type="text" class="form-control"></code></pre>
+                    </span>
+                </div>
+                <div>
+                    <textarea name="editGoogleFormConverted" rows="10" cols="120" required><?php echo $ConvertedHTML ?></textarea>
+                </div>
+                <div>
+                    <label><b>*</b>Timer Length in <b>Seconds</b> (0 for no timer)</label>
+                </div>
+                <div>
+                    <input type="number" name="Timer" value="<?php echo $timer ?>" required>
+                </div>
+                <input type="hidden" value=<?php echo $_POST['editID'] ?> name="editID">
+                <input type="submit" value="Submit" name="editSubmit">
             </div>
-            <div>
-                <textarea name="editGoogleFormConverted" rows="10" cols="120" required><?php echo $ConvertedHTML ?></textarea>
-            </div>
-            <div>
-                <label>Timer Length in <b>Seconds</b> (0 for no timer)</label>
-            </div>
-            <div>
-                <input type="number" name="Timer" value="<?php echo $timer ?>">
-            </div>
-            <input type="hidden" value=<?php echo $_POST['editID'] ?> name="editID">
-            <input type="submit" value="Submit" name="editSubmit">
         </form>
 
         <?php
@@ -114,7 +124,7 @@ function google_forms_redirect()
                     'convertedFormHTML' => $_POST['googleFormConverted'],
                     'timer' => $_POST['Timer'],
                     'shortcode' => '[GoogleForm snippet=' . $formName . ']'
-                    //[GoogleForm snippet="1"]
+                    //NOTE [GoogleForm snippet=quizform1]
                 )
             );
         }
@@ -225,23 +235,34 @@ function google_forms_redirect()
                     }
                     ?>
                     <div>
-                        <label>Name your form:
+                        <label><b>*</b>Name your form:
                             <div><input type="text" name="formName" required></input></div>
                         </label>
                     </div>
                     <div>
-                        <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
+                        <div>
+
+                            <label>Paste Google form sharing URL & copy HTML from: <a href="https://stefano.brilli.me/google-forms-html-exporter" target="_blank">Google Forms Converter</a></label>
+                            <label><b>Note: Please do not copy the Javascript</b></label><br>
+                        </div>
                         <br>
-                        <label><b>If you would like the user's email to be autofilled with the logged in user's email, please add id="emailAddress" to user-email inputs in the HTML.'<b></label>
+                        <div>
+                            <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace id="emailAddress" to user-email inputs in the HTML.<br></b>For Example:</span>
+                            <span>
+                                <pre><code>&ltinput id="011235" type="text" class="form-control"></code></pre>
+                            </span><span>Changed to:</span><span>
+                                <pre><code>&ltinput id="emailAddress" type="text" class="form-control"></code></pre>
+                            </span>
+                        </div>
                     </div>
                     <div>
                         <textarea name="googleFormConverted" rows="10" cols="120" required></textarea>
                     </div>
                     <div>
-                        <label>Timer Length in <b>Seconds</b> (0 for no timer)</label>
+                        <label>*Timer Length in <b>Seconds</b> (0 for no timer)</label>
                     </div>
                     <div>
-                        <input type="number" name="Timer" value="0">
+                        <input type="number" name="Timer" value="0" required>
                     </div>
 
                     <input type="submit" value="Submit" name="googleFormsADD">

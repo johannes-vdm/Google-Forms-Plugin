@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
     //grab form action
-    var formAction = document.getElementById("bootstrapForm").action;
+    const formAction = document.getElementById("bootstrapForm").action;
 
     $('#bootstrapForm').submit(function (e) {
         e.preventDefault();
@@ -32,7 +32,7 @@ function setCookie(name, days) {
 
     console.log(shortcodeName);
 
-    var expires = "";
+    let expires = "";
     if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
