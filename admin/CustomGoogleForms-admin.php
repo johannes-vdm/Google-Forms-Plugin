@@ -33,9 +33,6 @@ function custom_google_forms()
     );
 }
 
-
-
-
 if (isset($_POST['delete'])) {
 
     $SQLformID = $_POST['formID'];
@@ -74,7 +71,7 @@ function google_forms_redirect()
                     <h1>Edit Form:</h1>
                 </div>
                 <div>
-                    <label>Name your form:
+                    <label>*Name your form:
                         <div><input type="text" name="formName" value="<?php echo $formName ?>" required></input></div>
                     </label>
                 </div>
@@ -92,10 +89,25 @@ function google_forms_redirect()
                     </span>
                 </div>
                 <div>
+                    <span><b>Please add ("(required)" or "*") to all legends linked to all required inputs.<br></b>For Example:</span>
+                    <br>
+                    <span>
+                        <pre><code>&ltlegend for="233464">Your name&lt/legend><br> &ltinput id="011235" type="text" class="form-control" required></code></pre>
+                    </span>
+
+                    <span>Changed to:</span>
+                    <span>
+                        <pre><code>&ltlegend for="233464">Your name(required)&lt/legend><br> &ltinput id="011235" type="text" class="form-control" required></code></pre>
+                    </span>
+                </div>
+                <div>
+                    <label for="editGoogleFormConverted">*required</label>
+                </div>
+                <div>
                     <textarea name="editGoogleFormConverted" rows="10" cols="120" required><?php echo $ConvertedHTML ?></textarea>
                 </div>
                 <div>
-                    <label><b>*</b>Timer Length in <b>Seconds</b> (0 for no timer)</label>
+                    <label>*Timer Length in <b>Seconds</b> (0 for no timer)</label>
                 </div>
                 <div>
                     <input type="number" name="Timer" value="<?php echo $timer ?>" required>
@@ -188,15 +200,17 @@ function google_forms_redirect()
                     $shortcode = $values->shortcode;
                     $htmlConverted = $values->convertedFormHTML;
 
-                    $EDIT = '<form action="" method="post" id="editForm" onsubmit="location.reload()">
-            <input type="hidden" name="editID" value="' . $formID . '">
-            <input type="submit" value="Edit" name="edit">
-        </form>';
+                    $EDIT = '
+                    <form action="" method="post" id="editForm" onsubmit="location.reload()">
+                    <input type="hidden" name="editID" value="' . $formID . '">
+                    <input type="submit" value="Edit" name="edit">
+                    </form>';
 
-                    $DELETE =   '<form action="" method="post" id="deleteForm" onsubmit="location.reload()">
-                <input type="hidden" name="formID" value="' . $formID . '">
-                <input type="submit" value="X" name="delete">
-            </form>';
+                    $DELETE = '
+                    <form action="" method="post" id="deleteForm" onsubmit="location.reload()">
+                    <input type="hidden" name="formID" value="' . $formID . '">
+                    <input type="submit" value="X" name="delete">
+                    </form>';
 
                     $checkLengthHTML = strlen($htmlConverted);
 
@@ -207,7 +221,6 @@ function google_forms_redirect()
                     }
 
                     $final = '<tr>' . '<td>' . $formName . '</td><td>' . $seconds . '</td><td>' . $shortcode . '</td><td>' .  trimtext(htmlspecialchars($htmlConverted), 0, 80) . $dotdotdot . '</td><td>' . $EDIT . '</td><td style="text-align: center;">' . $DELETE . '</td>' . '<tr>';
-
 
                     echo $final;
                 }
@@ -256,6 +269,20 @@ function google_forms_redirect()
                         </div>
                     </div>
                     <div>
+                        <span><b>Please add ("(required)" or "*") to all legends linked to all required inputs.<br></b>For Example:</span>
+                        <br>
+                        <span>
+                            <pre><code>&ltlegend for="233464">Your name&lt/legend><br> &ltinput id="011235" type="text" class="form-control" required></code></pre>
+                        </span>
+
+                        <span>Changed to:</span>
+                        <span>
+                            <pre><code>&ltlegend for="233464">Your name(required)&lt/legend><br> &ltinput id="011235" type="text" class="form-control" required></code></pre>
+                        </span>
+                    </div>
+                    <div>
+                        <label for="editGoogleFormConverted">*required</label>
+                        <br>
                         <textarea name="googleFormConverted" rows="10" cols="120" required></textarea>
                     </div>
                     <div>
@@ -306,13 +333,6 @@ function google_forms_redirect()
             'css',
             'css_editor'
         );
-
-        add_action('load-' . $setting, 'css_scripts');
-    }
-
-
-    function css_scripts()
-    {
     }
 
     add_action('admin_init', 'css_register_setting');
@@ -327,8 +347,9 @@ function google_forms_redirect()
     }
 
     function css_editor()
+    //ANCHOR css admin inputs
     {
-        //ANCHOR css options
+
         $options    = get_option('simple_css');
         $css = isset($options['css']) ? strip_tags($options['css']) : '';
         ?>
@@ -342,12 +363,8 @@ function google_forms_redirect()
                     <div id="post-body-content">
                         <?php settings_fields('simple_css'); ?>
                         <div class="simple-css-container">
-                            <textarea name="simple_css[css]" id="css-textarea" rows="10" cols="70"><?php echo $css; ?></textarea>
+                            <textarea name="simple_css[css]" id="css-textarea" rows="20" cols="70"><?php echo $css; ?></textarea>
                         </div>
-                    </div>
-
-                    <div id="postbox-container-1" class="postbox-container simple-css-sidebar">
-
                     </div>
                     <div>
                         <input type="submit" name="submit" id="submit" value="Save CSS">
