@@ -1,67 +1,70 @@
 <?php
-//$_POST["HELLO"] = "SAFD";
-//if (!empty($_POST)) {
-//  die(var_dump($_POST));
-//  echo "NOT EMPTY";
-//}
 
-if (isset($_GET['examplePHP'])) {
-  echo "YES";
-} else {
-  echo "EMPTY";
-}
-if (isset($_POST['examplePHP'])) {
-  echo "YES";
-} else {
-  echo "EMPTY";
-}
-
-print_r($_POST);
-print_r($_POST['examplePHP']);
-echo $_POST['examplePHP'];
-
-//if (isset($_POST['examplePHP'])) { //check if $_POST['examplePHP'] exists
-//  print_r($_POST['examplePHP'], true); // echo the data
-//  echo $_POST['examplePHP'];
-//  echo "ISSET";
-//  //die(); // stop execution of the script.
-//} else {
-//  echo "No";
-//}
-
-if (isset($_COOKIE['shortcodeCookie'])) {
-  $ShortcodeCookie = $_COOKIE['shortcodeCookie'];
-  unset($_COOKIE['shortcodeCookie']);
-  setcookie('shortcodeCookie', null, -1, '/');
-}
-
-if (isset($_COOKIE['currentShortcodeCookie'])) {
-  $currentShortcodeCookie = $_COOKIE['currentShortcodeCookie'];
-  unset($_COOKIE['currentShortcodeCookie']);
-  setcookie('currentShortcodeCookie', null, -1, '/');
+if (isset($_COOKIE['ReturnedShortcodeCookie'])) {
+  $ReturnedShortcodeCookie = $_COOKIE['ReturnedShortcodeCookie'];
+  unset($_COOKIE['ReturnedShortcodeCookie']);
+  setcookie('ReturnedShortcodeCookie', null, -1, '/');
 }
 
 include(ABSPATH . "wp-includes/pluggable.php");
 
-if (isset($ShortcodeCookie)) {
+
+//ANCHOR currentURL()
+function currentURL()
+{
+  global $wp;
+  return home_url($_SERVER['REQUEST_URI']);
+}
+
+if (isset($ReturnedShortcodeCookie)) {
+
   global $wpdb;
+
   $table_name = $wpdb->prefix . "googleformscomplete";
 
   $current_user = wp_get_current_user();
   $current_email = $current_user->user_email;
 
-  $wpdb->insert(
-    $table_name,
-    array(
-      'UserEmail' => $current_email,
-      'FormCompleted' => $ShortcodeCookie
-    )
-  );
+  if (is_user_logged_in()) {
+
+    $URL = home_url($_SERVER['REQUEST_URI']);
+    $wpdb->insert(
+      $table_name,
+      array(
+        'UserEmail' => $current_email,
+        'FormCompleted' => $ReturnedShortcodeCookie,
+        'URL' => currentURL()
+      )
+    );
+  }
 }
 
-$current_user = wp_get_current_user();
-$currentUserEmail = $current_user->user_email;
 
+add_shortcode('GoogleForm', 'grabShortcode');
+
+function grabShortcode($atts)
+{
+  global $wpdb;
+
+  $table_name = $wpdb->prefix . "googleformsshortcode";
+  $shortCodeCurrent = $atts['snippet'];
+
+  $wpdb->query(
+    'DELETE FROM ' . $wpdb->prefix . 'googleformsshortcode;'
+  );
+
+  global $wp;
+  if (is_user_logged_in()) {
+    $wpdb->insert(
+      $table_name,
+      array(
+        'ShortcodeCurrent' => $shortCodeCurrent,
+        'userID' => get_current_user_id(),
+        'URL' => home_url($wp->request)
+      )
+    );
+  }
+}
 
 
 add_action('wp_loaded', 'register_ajax_handlers');
@@ -73,7 +76,7 @@ function register_ajax_handlers()
 }
 
 add_action('wp_enqueue_scripts', 'load_cs', 11);
-add_action('wp_enqueue_scripts', 'load_sc');
+
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
 
@@ -96,15 +99,6 @@ function load_au()
   wp_enqueue_script('GoogleFormSubmitAuto');
 }
 
-function load_sc()
-{
-  wp_register_script(
-    'ShortcodeIdentifier',
-    plugin_dir_url(__FILE__) . 'js/CurrentShortcode.js',
-    array('jquery')
-  );
-  wp_enqueue_script('ShortcodeIdentifier');
-}
 
 function load_tj()
 {
@@ -126,36 +120,42 @@ function add_to_header()
 }
 
 include_once(ABSPATH . 'wp-includes/pluggable.php');
-
 add_action('wp_enqueue_scripts', 'add_to_header');
 
-//TODO Send and check CurrentShortcode without using a cookie.
-if (isset($currentShortcodeCookie)) {
-  global $wpdb;
+global $wpdb;
+$query = "SELECT `ShortcodeCurrent` FROM " . $wpdb->prefix . "googleformsshortcode ORDER BY TIMESTAMP DESC LIMIT 1;";
+$result = $wpdb->get_results($query);
 
-  $query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '$currentUserEmail' = UserEmail AND FormCompleted IN ('$currentShortcodeCookie') LIMIT 1";
-  $result = $wpdb->get_results($query);
-
-  foreach ($result as $values) {
-    $userCompleted = $values->true;
-  }
+foreach ($result as $values) {
+  $shortcodeCurrent = $values->ShortcodeCurrent;
 }
 
-add_shortcode('GoogleForm', 'grabShortode');
+//ANCHOR currentURL()
+global $current_user;
+wp_get_current_user();
+$currentUserEmail = $current_user->user_email;
+global $wpdb;
+$query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '" . $currentUserEmail . "' = UserEmail AND URL = '" . (currentURL()) . "' ORDER BY TIMESTAMP DESC LIMIT 1";
+$result = $wpdb->get_results($query);
+foreach ($result as $values) {
+  $userCompleted = $values->true;
+}
+if (isset($userCompleted)) {
+  echo $userCompleted;
+}
+
 
 if (is_user_logged_in()) {
   if (isset($userCompleted)) {
     add_shortcode('GoogleForm', 'CompletedForm');
+    //NOTE You have completed this quiz
   } else {
     add_shortcode('GoogleForm', 'ReadyForm');
+    //NOTE You will be redirected. Ready?
   }
 } else {
   add_shortcode('GoogleForm', 'NotLoggedIn');
-}
-
-function grabShortode($shortcode_class)
-{
-  $shortcode_name = $shortcode_class['snippet'];
+  //NOTE You are not logged in.
 }
 
 function ReadyForm($shortcode_class)
@@ -173,7 +173,7 @@ function ReadyForm($shortcode_class)
 }
 
 if (isset($_POST['ReadyCheck'])) {
-  echo add_shortcode('GoogleForm', 'GoogleForm_display_content');
+  add_shortcode('GoogleForm', 'GoogleForm_display_content');
 }
 
 function CompletedForm($shortcode_class)
@@ -198,7 +198,6 @@ function NotLoggedIn($shortcode_class)
   return $notLoggedin;
 }
 
-
 function GoogleForm_display_content($shortcode_class)
 {
   global $wpdb;
@@ -213,7 +212,7 @@ function GoogleForm_display_content($shortcode_class)
 
     if ($seconds == 0) {
       return '<div id="shrtcode" value="' . $shortcode_name . '">
-      <div class="CompleteGoogleForm">' . $htmlConverted . '</div>>';
+      <div class="CompleteGoogleForm">' . $htmlConverted . '</div>';
     } else if ($seconds !== 0) {
       $jsHTML = '<div id="CountdownContainer">
         <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
