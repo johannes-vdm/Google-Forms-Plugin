@@ -16,6 +16,7 @@ require_once(plugin_dir_path(__FILE__) . 'CustomShortcode.php');
 require_once(plugin_dir_path(__FILE__) . 'GoogleFormsTable.php');
 require_once(plugin_dir_path(__FILE__) . 'admin/CustomGoogleForms-admin.php');
 
+//NOTE add error checking
 add_action('activated_plugin', 'my_save_error');
 function my_save_error()
 {

@@ -1,4 +1,9 @@
 <?php
+//=======CLEAR COOKIES HERE + REFRESH PAGES A FEW TIMES=====
+  #setcookie("readyCheck", "", time() - 3600);
+  #$readyCheck='';
+  #setcookie("ReturnedShortcodeCookie", "", time() - 3600);
+//==========================================================
 
 if (isset($_COOKIE['ReturnedShortcodeCookie'])) {
   $ReturnedShortcodeCookie = $_COOKIE['ReturnedShortcodeCookie'];
@@ -6,14 +11,26 @@ if (isset($_COOKIE['ReturnedShortcodeCookie'])) {
   setcookie('ReturnedShortcodeCookie', null, -1, '/');
 }
 
+if (isset($_COOKIE['readyCheck'])) {
+  $ReadyCheck = $_COOKIE['readyCheck'];
+  setcookie("readyCheck", "", time() - 3600);
+}
+
+
 include(ABSPATH . "wp-includes/pluggable.php");
 
-
 //ANCHOR currentURL()
-function currentURL()
-{
+
   global $wp;
-  return home_url($_SERVER['REQUEST_URI']);
+  $currentURL = home_url($_SERVER['REQUEST_URI']);
+
+
+//ANCHOR currentUserEmail()
+function currentUserEmail()
+{
+  global $current_user;
+  wp_get_current_user();
+  return $email = (string) $current_user->user_email;
 }
 
 if (isset($ReturnedShortcodeCookie)) {
@@ -33,39 +50,11 @@ if (isset($ReturnedShortcodeCookie)) {
       array(
         'UserEmail' => $current_email,
         'FormCompleted' => $ReturnedShortcodeCookie,
-        'URL' => currentURL()
+        'URL' => $currentURL
       )
     );
   }
 }
-
-
-add_shortcode('GoogleForm', 'grabShortcode');
-
-function grabShortcode($atts)
-{
-  global $wpdb;
-
-  $table_name = $wpdb->prefix . "googleformsshortcode";
-  $shortCodeCurrent = $atts['snippet'];
-
-  $wpdb->query(
-    'DELETE FROM ' . $wpdb->prefix . 'googleformsshortcode;'
-  );
-
-  global $wp;
-  if (is_user_logged_in()) {
-    $wpdb->insert(
-      $table_name,
-      array(
-        'ShortcodeCurrent' => $shortCodeCurrent,
-        'userID' => get_current_user_id(),
-        'URL' => home_url($wp->request)
-      )
-    );
-  }
-}
-
 
 add_action('wp_loaded', 'register_ajax_handlers');
 
@@ -76,7 +65,6 @@ function register_ajax_handlers()
 }
 
 add_action('wp_enqueue_scripts', 'load_cs', 11);
-
 add_action('wp_enqueue_scripts', 'load_au');
 add_action('wp_enqueue_scripts', 'load_tj');
 
@@ -98,7 +86,6 @@ function load_au()
   );
   wp_enqueue_script('GoogleFormSubmitAuto');
 }
-
 
 function load_tj()
 {
@@ -122,37 +109,28 @@ function add_to_header()
 include_once(ABSPATH . 'wp-includes/pluggable.php');
 add_action('wp_enqueue_scripts', 'add_to_header');
 
-global $wpdb;
-$query = "SELECT `ShortcodeCurrent` FROM " . $wpdb->prefix . "googleformsshortcode ORDER BY TIMESTAMP DESC LIMIT 1;";
-$result = $wpdb->get_results($query);
-
-foreach ($result as $values) {
-  $shortcodeCurrent = $values->ShortcodeCurrent;
-}
-
 //ANCHOR currentURL()
-global $current_user;
-wp_get_current_user();
-$currentUserEmail = $current_user->user_email;
+//ANCHOR currentUserEmail()
 global $wpdb;
-$query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '" . $currentUserEmail . "' = UserEmail AND URL = '" . (currentURL()) . "' ORDER BY TIMESTAMP DESC LIMIT 1";
+$query = "SELECT 'true' FROM " . $wpdb->prefix . "googleformscomplete WHERE '" . (currentUserEmail()) . "' = UserEmail AND URL = '" . $currentURL . "' ORDER BY TIMESTAMP DESC LIMIT 1";
 $result = $wpdb->get_results($query);
 foreach ($result as $values) {
   $userCompleted = $values->true;
 }
-if (isset($userCompleted)) {
-  echo $userCompleted;
-}
-
 
 if (is_user_logged_in()) {
   if (isset($userCompleted)) {
     add_shortcode('GoogleForm', 'CompletedForm');
     //NOTE You have completed this quiz
-  } else {
+  } else if (isset($ReadyCheck)){
+    //NOTE Person left
+    add_shortcode('GoogleForm', 'CompletedForm');
+  }
+    else {
     add_shortcode('GoogleForm', 'ReadyForm');
     //NOTE You will be redirected. Ready?
-  }
+  } 
+
 } else {
   add_shortcode('GoogleForm', 'NotLoggedIn');
   //NOTE You are not logged in.
@@ -174,6 +152,7 @@ function ReadyForm($shortcode_class)
 
 if (isset($_POST['ReadyCheck'])) {
   add_shortcode('GoogleForm', 'GoogleForm_display_content');
+  setcookie("readyCheck","true");
 }
 
 function CompletedForm($shortcode_class)
@@ -211,15 +190,16 @@ function GoogleForm_display_content($shortcode_class)
     $seconds = $values->timer;
 
     if ($seconds == 0) {
-      return '<div id="shrtcode" value="' . $shortcode_name . '">
+      return '<div id="currentUserEmail" value="'.currentUserEmail().'"></div><div id="shrtcode" value="' . $shortcode_name . '">
       <div class="CompleteGoogleForm">' . $htmlConverted . '</div>';
     } else if ($seconds !== 0) {
       $jsHTML = '<div id="CountdownContainer">
         <h4 class="CountdownTime" value=' . $seconds . '>00:00:00</h4>
       </div>';
-      return '<div id="shrtcode" value="' . $shortcode_name . '">
+      return '<div id="currentUserEmail" value="'.currentUserEmail().'"></div><div id="shrtcode" value="' . $shortcode_name . '">
         <div class="CompleteGoogleForm"></div>' . $htmlConverted . '
       </div>' . $jsHTML;
     }
   }
 }
+

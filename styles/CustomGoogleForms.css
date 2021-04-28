@@ -35,10 +35,18 @@ q:before, q:after {
     content: '';
     content: none;
 }
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+
+.emailAddress{
+    pointer-events: none;
+    background: rgb(216, 216, 216);
+}
+
 
 #readyBox{
     margin-top: 12px;

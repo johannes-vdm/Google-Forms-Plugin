@@ -7,7 +7,7 @@ function load_as()
 {
     wp_register_style(
         'CustomAdminMenu',
-        plugin_dir_url(__FILE__) . "admin/styles/AdminMenu.css"
+        plugin_dir_url(__FILE__) . "/styles/AdminMenu.css"
     );
     wp_enqueue_style('CustomAdminMenu');
 }
@@ -40,6 +40,9 @@ if (isset($_POST['delete'])) {
     $wpdb->query(
         'DELETE FROM ' . $wpdb->prefix . 'googleforms
          WHERE formID = "' . $SQLformID . '"'
+    );
+    $wpdb->query(
+        'DELETE * FROM ' . $wpdb->prefix . 'googleformscomplete"'
     );
     header('Location: ' . $_SERVER['HTTP_REFERER']);
 }
@@ -81,11 +84,11 @@ function google_forms_redirect()
                 </div>
                 <br>
                 <div>
-                    <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace id="emailAddress" to user-email inputs in the HTML.<br></b>For Example:</span>
+                    <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace class="emailAddress" in the user-email inputs in the HTML.<br></b>For Example:</span>
                     <span>
                         <pre><code>&ltinput id="011235" type="text" class="form-control"></code></pre>
                     </span><span>Changed to:</span><span>
-                        <pre><code>&ltinput id="emailAddress" type="text" class="form-control"></code></pre>
+                        <pre><code>&ltinput id="011235" type="text" class="emailAddress"></code></pre>
                     </span>
                 </div>
                 <div>
@@ -260,11 +263,11 @@ function google_forms_redirect()
                         </div>
                         <br>
                         <div>
-                            <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace id="emailAddress" to user-email inputs in the HTML.<br></b>For Example:</span>
+                            <span><b>If you would like the user's email to be autofilled with the logged in user's email, please add or replace class="emailAddress" in the user-email inputs in the HTML.<br></b>For Example:</span>
                             <span>
                                 <pre><code>&ltinput id="011235" type="text" class="form-control"></code></pre>
                             </span><span>Changed to:</span><span>
-                                <pre><code>&ltinput id="emailAddress" type="text" class="form-control"></code></pre>
+                                <pre><code>&ltinput id="011235" type="text" class="emailAddress"></code></pre>
                             </span>
                         </div>
                     </div>

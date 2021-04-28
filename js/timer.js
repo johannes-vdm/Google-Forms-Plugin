@@ -1,7 +1,7 @@
 function setCookie(name, value, days) {
-    var expires = "";
+    let expires = "";
     if (days) {
-        var date = new Date();
+        let date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
@@ -10,14 +10,23 @@ function setCookie(name, value, days) {
 
 window.onload = function () {
 
+    const currentUserEmailDivElement = document.getElementById('currentUserEmail');
+    console.log(currentUserEmailDivElement);
+
+    currentUserEmailValue = currentUserEmailDivElement.getAttribute('value');
+    inputEmailElements = document.getElementsByClassName('emailAddress');
+
+    for (let i = 0; i < inputEmailElements.length; i++) {
+        inputEmailElements[i].value = currentUserEmailValue;
+    }
+
     const multipleCountdownElements = document.getElementsByClassName('CountdownTime');
 
     countdownElements = multipleCountdownElements[0];
     let time = countdownElements.getAttribute('value');
-    var refreshTimer = setInterval(updateCountdown, 1000);
+    let refreshTimer = setInterval(updateCountdown, 1000);
 
     function updateCountdown() {
-
 
         if (time > 3600) {
             //STUB >01h
@@ -45,12 +54,9 @@ window.onload = function () {
 
         } else if (time <= 0) {
             //STUB time over. 
-
             clearInterval(refreshTimer);
             time = 0;
-            console.log('TIMES UP');
-            console.log(time);
-            var formAction = document.getElementById("bootstrapForm").action;
+            let formAction = document.getElementById("bootstrapForm").action;
             jQuery.ajax({
                 url: formAction,
                 data: jQuery('#bootstrapForm').serialize(),
@@ -61,7 +67,9 @@ window.onload = function () {
                     history.back(alert('Quiz Submitted. Thanks.'));
                     const shortcodeElemnent = document.getElementById('shrtcode');
                     let shortcodeName = shortcodeElemnent.getAttribute('value');
+                    echo();
                     setCookie('ReturnedShortcodeCookie', shortcodeName, 1);
+                    setCookie('ReturnedURL', window.location["href"], 1);
                     //NOTE send cookie to check if form was submitted per user
                 }
             });
@@ -75,10 +83,8 @@ window.onload = function () {
     }
 }
 
-// If user tries to exit once they enter the quiz
 window.onbeforeunload = function () {
-    alert("HEY YOU THERE");
-    var formAction = document.getElementById("bootstrapForm").action;
+    let formAction = document.getElementById("bootstrapForm").action;
     jQuery.ajax({
         url: formAction,
         data: jQuery('#bootstrapForm').serialize(),
@@ -86,13 +92,13 @@ window.onbeforeunload = function () {
         dataType: "json",
 
         error: function () {
-            history.back(alert('Quiz Submitted. Thanks.'));
+            //history.back(alert('Quiz Submitted. Thanks.'));
             const shortcodeElemnent = document.getElementById('shrtcode');
             let shortcodeName = shortcodeElemnent.getAttribute('value');
+            echo();
             setCookie('ReturnedShortcodeCookie', shortcodeName, 1);
-            //NOTE send cookie to check if form was submitted per user
+            setCookie('ReturnedURL', window.location["href"], 1);
         }
     });
-    console.log("I tried");
-};
-
+    return true;
+}
