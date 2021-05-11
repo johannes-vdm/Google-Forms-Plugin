@@ -9,9 +9,7 @@ function setCookie(name, value, days) {
 }
 
 window.onload = function () {
-
     const currentUserEmailDivElement = document.getElementById('currentUserEmail');
-    console.log(currentUserEmailDivElement);
 
     currentUserEmailValue = currentUserEmailDivElement.getAttribute('value');
     inputEmailElements = document.getElementsByClassName('emailAddress');
@@ -57,6 +55,7 @@ window.onload = function () {
             clearInterval(refreshTimer);
             time = 0;
             let formAction = document.getElementById("bootstrapForm").action;
+            window.onbeforeunload = null;
             jQuery.ajax({
                 url: formAction,
                 data: jQuery('#bootstrapForm').serialize(),
@@ -67,17 +66,13 @@ window.onload = function () {
                     history.back(alert('Quiz Submitted. Thanks.'));
                     const shortcodeElemnent = document.getElementById('shrtcode');
                     let shortcodeName = shortcodeElemnent.getAttribute('value');
-                    echo();
                     setCookie('ReturnedShortcodeCookie', shortcodeName, 1);
-                    setCookie('ReturnedURL', window.location["href"], 1);
+
                     //NOTE send cookie to check if form was submitted per user
                 }
             });
-
         } else {
-            console.log(time);
-
-            //STUB should never happen.
+            //NOTE should never happen.
             console.error("Time invalid");
         }
     }
@@ -92,12 +87,9 @@ window.onbeforeunload = function () {
         dataType: "json",
 
         error: function () {
-            //history.back(alert('Quiz Submitted. Thanks.'));
             const shortcodeElemnent = document.getElementById('shrtcode');
             let shortcodeName = shortcodeElemnent.getAttribute('value');
-            echo();
             setCookie('ReturnedShortcodeCookie', shortcodeName, 1);
-            setCookie('ReturnedURL', window.location["href"], 1);
         }
     });
     return true;

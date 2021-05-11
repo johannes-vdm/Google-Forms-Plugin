@@ -1,11 +1,10 @@
 jQuery(document).ready(function ($) {
-    const shortcodeElemnent = document.getElementById('shrtcode');
-    let shortcodeName = shortcodeElemnent.getAttribute('value');
+
     const formAction = document.getElementById("bootstrapForm").action;
 
     $('#bootstrapForm').submit(function (e) {
+        window.onbeforeunload = null;
         e.preventDefault();
-
         $.ajax({
             url: formAction,
             data: $('#bootstrapForm').serialize(),
@@ -13,13 +12,9 @@ jQuery(document).ready(function ($) {
             dataType: "json",
 
             error: function () {
-
+                //window.onbeforeunload = null;
                 history.back(alert('Quiz Submitted. Thanks.'));
-
-                setCookie('ReturnedShortcodeCookie', shortcodeName, 1);
-
             }
         });
     });
 });
-

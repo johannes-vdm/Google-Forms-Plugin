@@ -41,9 +41,7 @@ if (isset($_POST['delete'])) {
         'DELETE FROM ' . $wpdb->prefix . 'googleforms
          WHERE formID = "' . $SQLformID . '"'
     );
-    $wpdb->query(
-        'DELETE * FROM ' . $wpdb->prefix . 'googleformscomplete"'
-    );
+
     header('Location: ' . $_SERVER['HTTP_REFERER']);
 }
 
